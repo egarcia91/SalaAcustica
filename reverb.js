@@ -122,8 +122,8 @@ var dataTiempoOptimo30down = [];
 for(var i = 0, frec; frec = frecuenciaMateriales[i]; i++){
 var tr = TiempoReverberacion(volumen,superficie.Total,frec);
 dataTiempoOptimo.push(tr);
-dataTiempoOptimo30up.push(tr*1.15);
-dataTiempoOptimo30down.push(tr*0.85);
+dataTiempoOptimo30up.push(tr*1.3);
+dataTiempoOptimo30down.push(tr*0.7);
 
 }
 
@@ -170,9 +170,9 @@ dataTiempoMuebles.push(Tr);
 var dataTiempoPersonas = [];
 var ecm = [];
 for(var i = 0, frec; frec = frecuenciaMateriales[i]; i++){
-var Apared = areaEq("Pared",0,i);
-var Atecho = areaEq("Techo",1,i);
-var Apiso = areaEq("Piso",0,i);
+var Apared = areaEq("Pared",20,i);
+var Atecho = areaEq("Techo",10,i);
+var Apiso = areaEq("Piso",7,i);
 var Apuerta = areaEq("Puerta",0,i);
 var Asillas = (1-p)*nSillas*datoEq("Silla",1,i);
 var Amesa = datoEq("Mesa",0,i);
@@ -194,23 +194,63 @@ dataTiempoPersonas.push(Tr);
 var resultados = [];
 var res = [];
 
-for(var j = 0; j < lenPared; j++){
-for(var h = 0; h < lenPisos; h++){
 for(var k = 0; k < lenTechos; k++){
-for(var l = 0; l < lenSillas; l++){
 var tRev = [];
 var tRevAux = [];
 for(var i = 0; frecuenciaMateriales[i]; i++){
-var Apared = areaEq("Pared",j,i);
+var Apared = areaEq("Pared",0,i);
 var Atecho = areaEq("Techo",k,i);
-var Apiso = areaEq("Piso",h,i);
+var Apiso = areaEq("Piso",0,i);
 var Apuerta = areaEq("Puerta",0,i);
-var Asillas = (1-p)*nSillas*datoEq("Silla",l,i);
+var Asillas = (1-p)*nSillas*datoEq("Silla",1,i);
 var Amesa = datoEq("Mesa",0,i);
 var Aeq = Apiso + Atecho + Apared + Apuerta;
 var Aeq2 = Aeq + Asillas + Amesa;
 
-var Apersonas = p*nSillas*datoEq("Persona",l,i);
+var Apersonas = p*nSillas*datoEq("Persona",1,i);
+var Atotal = Aeq2 + Apersonas;
+var tr = TiempoReverberacion(volumen, Atotal);
+
+tRev.push((dataTiempoOptimo[i] - tr)*(dataTiempoOptimo[i] - tr));
+tRevAux.push(tr);
+}
+
+resultados.push(tRev.reduce(getSum, 0));
+var data = {
+t : tRevAux,
+indexPared : 0,
+indexTecho : k,
+indexPiso : 0,
+indexPersonaSilla : 1,
+pared : datosMateriales["Pared"][0].nombre,
+techo : datosMateriales["Techo"][k].nombre,
+piso :  datosMateriales["Piso"][0].nombre,
+silla : datosMateriales["Silla"][1].nombre
+}
+res.push(data);
+}
+
+
+var resultados = [];
+var res = [];
+
+//for(var k = 0; k < lenTechos; k++){
+for(var j = 0; j < lenPared; j++){
+var tRev = [];
+var tRevAux = [];
+for(var i = 0; frecuenciaMateriales[i]; i++){
+
+var pfpt = 0.3872;
+var Apared = pfpt*areaEq("Pared",j,i) + (1-pfpt)*areaEq("Pared",0,i);
+var Atecho = areaEq("Techo",36,i);
+var Apiso = areaEq("Piso",0,i);
+var Apuerta = areaEq("Puerta",0,i);
+var Asillas = (1-p)*nSillas*datoEq("Silla",1,i);
+var Amesa = datoEq("Mesa",0,i);
+var Aeq = Apiso + Atecho + Apared + Apuerta;
+var Aeq2 = Aeq + Asillas + Amesa;
+
+var Apersonas = p*nSillas*datoEq("Persona",1,i);
 var Atotal = Aeq2 + Apersonas;
 var tr = TiempoReverberacion(volumen, Atotal);
 
@@ -222,19 +262,59 @@ resultados.push(tRev.reduce(getSum, 0));
 var data = {
 t : tRevAux,
 indexPared : j,
-indexTecho : k,
-indexPiso : h,
-indexPersonaSilla : l,
+indexTecho : 36,
+indexPiso : 0,
+indexPersonaSilla : 1,
 pared : datosMateriales["Pared"][j].nombre,
-techo : datosMateriales["Techo"][k].nombre,
-piso :  datosMateriales["Piso"][h].nombre,
-silla : datosMateriales["Silla"][l].nombre
+techo : datosMateriales["Techo"][36].nombre,
+piso :  datosMateriales["Piso"][0].nombre,
+silla : datosMateriales["Silla"][1].nombre
 }
 res.push(data);
 }
-}
-}
-}
+
+
+//for(var j = 0; j < lenPared; j++){
+//for(var h = 0; h < lenPisos; h++){
+//for(var k = 0; k < lenTechos; k++){
+//for(var l = 0; l < lenSillas; l++){
+//var tRev = [];
+//var tRevAux = [];
+//for(var i = 0; frecuenciaMateriales[i]; i++){
+//var Apared = areaEq("Pared",j,i);
+//var Atecho = areaEq("Techo",k,i);
+//var Apiso = areaEq("Piso",h,i);
+//var Apuerta = areaEq("Puerta",0,i);
+//var Asillas = (1-p)*nSillas*datoEq("Silla",l,i);
+//var Amesa = datoEq("Mesa",0,i);
+//var Aeq = Apiso + Atecho + Apared + Apuerta;
+//var Aeq2 = Aeq + Asillas + Amesa;
+//
+//var Apersonas = p*nSillas*datoEq("Persona",l,i);
+//var Atotal = Aeq2 + Apersonas;
+//var tr = TiempoReverberacion(volumen, Atotal);
+//
+//tRev.push((dataTiempoOptimo[i] - tr)*(dataTiempoOptimo[i] - tr));
+//tRevAux.push(tr);
+//}
+//
+//resultados.push(tRev.reduce(getSum, 0));
+//var data = {
+//t : tRevAux,
+//indexPared : j,
+//indexTecho : k,
+//indexPiso : h,
+//indexPersonaSilla : l,
+//pared : datosMateriales["Pared"][j].nombre,
+//techo : datosMateriales["Techo"][k].nombre,
+//piso :  datosMateriales["Piso"][h].nombre,
+//silla : datosMateriales["Silla"][l].nombre
+//}
+//res.push(data);
+//}
+//}
+//}
+//}
 
 var inf = 3;
 var pos = -1;
@@ -244,11 +324,13 @@ inf = aa;
 pos = i;
 }
 }
-//console.log(res[pos]);
+console.log(res[pos]);
 
 var ecm = [];
 for(var i = 0, frec; frec = frecuenciaMateriales[i]; i++){
-var Apared = areaEq("Pared",res[pos].indexPared,i);
+var pfpt = 0.3872;
+var Apared = pfpt*areaEq("Pared",res[pos].indexPared,i) + (1-pfpt)*areaEq("Pared",0,i);
+//var Apared = areaEq("Pared",res[pos].indexPared,i);
 var Atecho = areaEq("Techo",res[pos].indexTecho,i);
 var Apiso = areaEq("Piso",res[pos].indexPiso,i);
 var Apuerta = areaEq("Puerta",0,i);
@@ -263,14 +345,14 @@ var Tr = TiempoReverberacion(volumen, Atotal);
 
 var cuad = (dataTiempoOptimo[i]-Tr)*(dataTiempoOptimo[i]-Tr);
 ecm.push(cuad);
-console.log(frec+" & "+Tr.toFixed(2)+" & "+dataTiempoOptimo[i].toFixed(2)+" & "+cuad.toFixed(2)+"\\\\");
+//console.log(frec+" & "+Tr.toFixed(2)+" & "+dataTiempoOptimo[i].toFixed(2)+" & "+cuad.toFixed(2)+"\\\\");
 //
-//console.log(frec+" & "+Apiso.toFixed(2)+" & "+Atecho.toFixed(2)+" & "+Apared.toFixed(2)+" & "+Apuerta.toFixed(2)+" & "+Amesa.toFixed(2)+" & "+Asillas.toFixed(2)+" & "+Apersonas.toFixed(2)+" & "+Atotal.toFixed(2)+" & "+Tr.toFixed(2)+"\\\\");
+console.log(frec+" & "+Apiso.toFixed(2)+" & "+Atecho.toFixed(2)+" & "+Apared.toFixed(2)+" & "+Apuerta.toFixed(2)+" & "+Amesa.toFixed(2)+" & "+Asillas.toFixed(2)+" & "+Apersonas.toFixed(2)+" & "+Atotal.toFixed(2)+" & "+Tr.toFixed(2)+"\\\\");
 //console.log(frec+" & "+Aeq2.toFixed(2)+" & "+Apersonas.toFixed(2)+" & "+Atotal.toFixed(2)+" & "+Tr.toFixed(2)+"\\\\");
 
 }
 //console.log(ecm);
-//console.log("ECM final "+ecm.reduce(getSum, 0)/6);
+console.log("ECM final "+ecm.reduce(getSum, 0)/6);
 
 var barChartData = {
 labels: frecuenciaMateriales,
@@ -318,7 +400,7 @@ lineTension : 0,
 fill : false,
 data: dataTiempoPersonas
 },{
-borderColor: 'green',
+borderColor: 'black',
 borderWidth: 4,
 pointRadius : 0,
 lineTension : 0,
