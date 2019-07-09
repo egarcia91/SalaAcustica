@@ -10,9 +10,8 @@ var datosSilla = [
 			0.04
 		]
 	},{
-		nombre : "Butacas tapizadas vacías",
+		nombre : "Butacas tapizadas vacías 1",
 		Aeq : [
-			1,
 			0.12,
 			0.20,
 			0.28,
@@ -21,9 +20,8 @@ var datosSilla = [
 			0.37
 		]
 	},{
-		nombre : "Butacas tapizadas vacías",
+		nombre : "Butacas tapizadas vacías 2",
 		Aeq : [
-			2,
 			0.12,
 			0.23,
 			0.27,

@@ -1,5 +1,6 @@
 var Q = 2;
 var T60 = 0.8;
+var tolerancia = 0.3;
 var fs = 95;
 var alfa = 0.02;
 var volumen = 356.86;
@@ -122,8 +123,8 @@ var dataTiempoOptimo30down = [];
 for(var i = 0, frec; frec = frecuenciaMateriales[i]; i++){
 var tr = TiempoReverberacion(volumen,superficie.Total,frec);
 dataTiempoOptimo.push(tr);
-dataTiempoOptimo30up.push(tr*1.3);
-dataTiempoOptimo30down.push(tr*0.7);
+dataTiempoOptimo30up.push(tr*(1 + tolerancia));
+dataTiempoOptimo30down.push(tr*(1 - tolerancia));
 
 }
 
@@ -147,7 +148,7 @@ dataTiempoVacia.push(Tr);
 //console.log("ECM sala vacia "+ecm.reduce(getSum, 0)/6);
 
 var dataTiempoMuebles = [];
-var ecm = [];
+//var ecm = [];
 for(var i = 0, frec; frec = frecuenciaMateriales[i]; i++){
 var Apared = areaEq("Pared",0,i);
 var Atecho = areaEq("Techo",1,i);
@@ -159,8 +160,8 @@ var Aeq = Apiso + Atecho + Apared + Apuerta;
 var Atotal = Aeq + Asillas + Amesa;
 var Tr = TiempoReverberacion(volumen, Atotal);
 
-var cuad = (dataTiempoOptimo[i]-Tr)*(dataTiempoOptimo[i]-Tr);
-ecm.push(cuad);
+//var cuad = (dataTiempoOptimo[i]-Tr)*(dataTiempoOptimo[i]-Tr);
+//ecm.push(cuad);
 //console.log(frec+" & "+Aeq.toFixed(2)+" & "+Asillas.toFixed(2)+" & "+Amesa.toFixed(2)+" & "+Atotal.toFixed(2)+" & "+Tr.toFixed(2)+"\\\\");
 dataTiempoMuebles.push(Tr);
 
@@ -168,11 +169,11 @@ dataTiempoMuebles.push(Tr);
 //console.log("ECM sala con muebles "+ecm.reduce(getSum, 0)/6);
 
 var dataTiempoPersonas = [];
-var ecm = [];
+//var ecm = [];
 for(var i = 0, frec; frec = frecuenciaMateriales[i]; i++){
-var Apared = areaEq("Pared",20,i);
-var Atecho = areaEq("Techo",10,i);
-var Apiso = areaEq("Piso",7,i);
+var Apared = areaEq("Pared",0,i);
+var Atecho = areaEq("Techo",1,i);
+var Apiso = areaEq("Piso",0,i);
 var Apuerta = areaEq("Puerta",0,i);
 var Asillas = (1-p)*nSillas*datoEq("Silla",1,i);
 var Amesa = datoEq("Mesa",0,i);
@@ -183,114 +184,97 @@ var Apersonas = p*nSillas*datoEq("Persona",1,i);
 var Atotal = Aeq2 + Apersonas;
 var Tr = TiempoReverberacion(volumen, Atotal);
 
-var cuad = (dataTiempoOptimo[i]-Tr)*(dataTiempoOptimo[i]-Tr);
-ecm.push(cuad);
+//var cuad = (dataTiempoOptimo[i]-Tr)*(dataTiempoOptimo[i]-Tr);
+//ecm.push(cuad);
 //console.log(frec+" & "+Aeq2.toFixed(2)+" & "+Apersonas.toFixed(2)+" & "+Atotal.toFixed(2)+" & "+Tr.toFixed(2)+"\\\\");
 dataTiempoPersonas.push(Tr);
 
 }
+
+var dataTiempoTecho = [];
+//var ecm = [];
+for(var i = 0, frec; frec = frecuenciaMateriales[i]; i++){
+var Apared = areaEq("Pared",0,i);
+var Atecho = areaEq("Techo",27,i);
+var Apiso = areaEq("Piso",0,i);
+var Apuerta = areaEq("Puerta",0,i);
+var Asillas = (1-p)*nSillas*datoEq("Silla",1,i);
+var Amesa = datoEq("Mesa",0,i);
+var Aeq = Apiso + Atecho + Apared + Apuerta;
+var Aeq2 = Aeq + Asillas + Amesa;
+
+var Apersonas = p*nSillas*datoEq("Persona",1,i);
+var Atotal = Aeq2 + Apersonas;
+var Tr = TiempoReverberacion(volumen, Atotal);
+
+//var cuad = (dataTiempoOptimo[i]-Tr)*(dataTiempoOptimo[i]-Tr);
+//ecm.push(cuad);
+//console.log(frec+" & "+Aeq2.toFixed(2)+" & "+Apersonas.toFixed(2)+" & "+Atotal.toFixed(2)+" & "+Tr.toFixed(2)+"\\\\");
+dataTiempoTecho.push(Tr);
+
+}
 //console.log("ECM sala con personas "+ecm.reduce(getSum, 0)/6);
 
-var resultados = [];
-var res = [];
-
-for(var k = 0; k < lenTechos; k++){
-var tRev = [];
-var tRevAux = [];
-for(var i = 0; frecuenciaMateriales[i]; i++){
-var Apared = areaEq("Pared",0,i);
-var Atecho = areaEq("Techo",k,i);
-var Apiso = areaEq("Piso",0,i);
-var Apuerta = areaEq("Puerta",0,i);
-var Asillas = (1-p)*nSillas*datoEq("Silla",1,i);
-var Amesa = datoEq("Mesa",0,i);
-var Aeq = Apiso + Atecho + Apared + Apuerta;
-var Aeq2 = Aeq + Asillas + Amesa;
-
-var Apersonas = p*nSillas*datoEq("Persona",1,i);
-var Atotal = Aeq2 + Apersonas;
-var tr = TiempoReverberacion(volumen, Atotal);
-
-tRev.push((dataTiempoOptimo[i] - tr)*(dataTiempoOptimo[i] - tr));
-tRevAux.push(tr);
-}
-
-resultados.push(tRev.reduce(getSum, 0));
-var data = {
-t : tRevAux,
-indexPared : 0,
-indexTecho : k,
-indexPiso : 0,
-indexPersonaSilla : 1,
-pared : datosMateriales["Pared"][0].nombre,
-techo : datosMateriales["Techo"][k].nombre,
-piso :  datosMateriales["Piso"][0].nombre,
-silla : datosMateriales["Silla"][1].nombre
-}
-res.push(data);
-}
-
-
-var resultados = [];
-var res = [];
-
+//var resultados = [];
+//var res = [];
+//
 //for(var k = 0; k < lenTechos; k++){
-for(var j = 0; j < lenPared; j++){
-var tRev = [];
-var tRevAux = [];
-for(var i = 0; frecuenciaMateriales[i]; i++){
-
-var pfpt = 0.3872;
-var Apared = pfpt*areaEq("Pared",j,i) + (1-pfpt)*areaEq("Pared",0,i);
-var Atecho = areaEq("Techo",36,i);
-var Apiso = areaEq("Piso",0,i);
-var Apuerta = areaEq("Puerta",0,i);
-var Asillas = (1-p)*nSillas*datoEq("Silla",1,i);
-var Amesa = datoEq("Mesa",0,i);
-var Aeq = Apiso + Atecho + Apared + Apuerta;
-var Aeq2 = Aeq + Asillas + Amesa;
-
-var Apersonas = p*nSillas*datoEq("Persona",1,i);
-var Atotal = Aeq2 + Apersonas;
-var tr = TiempoReverberacion(volumen, Atotal);
-
-tRev.push((dataTiempoOptimo[i] - tr)*(dataTiempoOptimo[i] - tr));
-tRevAux.push(tr);
-}
-
-resultados.push(tRev.reduce(getSum, 0));
-var data = {
-t : tRevAux,
-indexPared : j,
-indexTecho : 36,
-indexPiso : 0,
-indexPersonaSilla : 1,
-pared : datosMateriales["Pared"][j].nombre,
-techo : datosMateriales["Techo"][36].nombre,
-piso :  datosMateriales["Piso"][0].nombre,
-silla : datosMateriales["Silla"][1].nombre
-}
-res.push(data);
-}
-
-
-//for(var j = 0; j < lenPared; j++){
-//for(var h = 0; h < lenPisos; h++){
-//for(var k = 0; k < lenTechos; k++){
-//for(var l = 0; l < lenSillas; l++){
 //var tRev = [];
 //var tRevAux = [];
 //for(var i = 0; frecuenciaMateriales[i]; i++){
-//var Apared = areaEq("Pared",j,i);
+//var Apared = areaEq("Pared",0,i);
 //var Atecho = areaEq("Techo",k,i);
-//var Apiso = areaEq("Piso",h,i);
+//var Apiso = areaEq("Piso",0,i);
 //var Apuerta = areaEq("Puerta",0,i);
-//var Asillas = (1-p)*nSillas*datoEq("Silla",l,i);
+//var Asillas = (1-p)*nSillas*datoEq("Silla",1,i);
 //var Amesa = datoEq("Mesa",0,i);
 //var Aeq = Apiso + Atecho + Apared + Apuerta;
 //var Aeq2 = Aeq + Asillas + Amesa;
 //
-//var Apersonas = p*nSillas*datoEq("Persona",l,i);
+//var Apersonas = p*nSillas*datoEq("Persona",1,i);
+//var Atotal = Aeq2 + Apersonas;
+//var tr = TiempoReverberacion(volumen, Atotal);
+//
+//tRev.push((dataTiempoOptimo[i] - tr)*(dataTiempoOptimo[i] - tr));
+//tRevAux.push(tr);
+//}
+//
+//resultados.push(tRev.reduce(getSum, 0));
+//var data = {
+//t : tRevAux,
+//indexPared : 0,
+//indexTecho : k,
+//indexPiso : 0,
+//indexPersonaSilla : 1,
+//pared : datosMateriales["Pared"][0].nombre,
+//techo : datosMateriales["Techo"][k].nombre,
+//piso :  datosMateriales["Piso"][0].nombre,
+//silla : datosMateriales["Silla"][1].nombre
+//}
+//res.push(data);
+//}
+//
+//
+//var resultados = [];
+//var res = [];
+//
+////for(var k = 0; k < lenTechos; k++){
+//for(var j = 0; j < lenPared; j++){
+//var tRev = [];
+//var tRevAux = [];
+//for(var i = 0; frecuenciaMateriales[i]; i++){
+//
+//var pfpt = 0.3872;
+//var Apared = pfpt*areaEq("Pared",j,i) + (1-pfpt)*areaEq("Pared",0,i);
+//var Atecho = areaEq("Techo",36,i);
+//var Apiso = areaEq("Piso",0,i);
+//var Apuerta = areaEq("Puerta",0,i);
+//var Asillas = (1-p)*nSillas*datoEq("Silla",1,i);
+//var Amesa = datoEq("Mesa",0,i);
+//var Aeq = Apiso + Atecho + Apared + Apuerta;
+//var Aeq2 = Aeq + Asillas + Amesa;
+//
+//var Apersonas = p*nSillas*datoEq("Persona",1,i);
 //var Atotal = Aeq2 + Apersonas;
 //var tr = TiempoReverberacion(volumen, Atotal);
 //
@@ -302,19 +286,64 @@ res.push(data);
 //var data = {
 //t : tRevAux,
 //indexPared : j,
-//indexTecho : k,
-//indexPiso : h,
-//indexPersonaSilla : l,
+//indexTecho : 36,
+//indexPiso : 0,
+//indexPersonaSilla : 1,
 //pared : datosMateriales["Pared"][j].nombre,
-//techo : datosMateriales["Techo"][k].nombre,
-//piso :  datosMateriales["Piso"][h].nombre,
-//silla : datosMateriales["Silla"][l].nombre
+//techo : datosMateriales["Techo"][36].nombre,
+//piso :  datosMateriales["Piso"][0].nombre,
+//silla : datosMateriales["Silla"][1].nombre
 //}
 //res.push(data);
 //}
+
+
+var resultados = [];
+var res = [];
+var h = 0;
+
+for(var j = 0; j < lenPared; j++){
+//for(var h = 0; h < lenPisos; h++){
+for(var k = 0; k < lenTechos; k++){
+for(var l = 0; l < lenSillas; l++){
+var tRev = [];
+var tRevAux = [];
+for(var i = 0; frecuenciaMateriales[i]; i++){
+var pfpt = 0.3872;
+var Apared = pfpt*areaEq("Pared",j,i) + (1-pfpt)*areaEq("Pared",0,i);
+var Atecho = areaEq("Techo",k,i);
+var Apiso = areaEq("Piso",h,i);
+var Apuerta = areaEq("Puerta",0,i);
+var Asillas = (1-p)*nSillas*datoEq("Silla",l,i);
+var Amesa = datoEq("Mesa",0,i);
+var Aeq = Apiso + Atecho + Apared + Apuerta;
+var Aeq2 = Aeq + Asillas + Amesa;
+
+var Apersonas = p*nSillas*datoEq("Persona",l,i);
+var Atotal = Aeq2 + Apersonas;
+var tr = TiempoReverberacion(volumen, Atotal);
+
+tRev.push((dataTiempoOptimo[i] - tr)*(dataTiempoOptimo[i] - tr));
+tRevAux.push(tr);
+}
+
+resultados.push(tRev.reduce(getSum, 0));
+var data = {
+t : tRevAux,
+indexPared : j,
+indexTecho : k,
+indexPiso : h,
+indexPersonaSilla : l,
+pared : datosMateriales["Pared"][j].nombre,
+techo : datosMateriales["Techo"][k].nombre,
+piso :  datosMateriales["Piso"][h].nombre,
+silla : datosMateriales["Silla"][l].nombre
+}
+res.push(data);
+}
 //}
-//}
-//}
+}
+}
 
 var inf = 3;
 var pos = -1;
@@ -324,7 +353,7 @@ inf = aa;
 pos = i;
 }
 }
-console.log(res[pos]);
+//console.log(res[pos]);
 
 var ecm = [];
 for(var i = 0, frec; frec = frecuenciaMateriales[i]; i++){
@@ -352,7 +381,7 @@ console.log(frec+" & "+Apiso.toFixed(2)+" & "+Atecho.toFixed(2)+" & "+Apared.toF
 
 }
 //console.log(ecm);
-console.log("ECM final "+ecm.reduce(getSum, 0)/6);
+//console.log("ECM final "+ecm.reduce(getSum, 0)/6);
 
 var barChartData = {
 labels: frecuenciaMateriales,
@@ -399,6 +428,13 @@ pointRadius : 0,
 lineTension : 0,
 fill : false,
 data: dataTiempoPersonas
+},{
+borderColor: 'green',
+borderWidth: 4,
+pointRadius : 0,
+lineTension : 0,
+fill : false,
+data: dataTiempoTecho
 },{
 borderColor: 'black',
 borderWidth: 4,
@@ -454,21 +490,21 @@ labelString : "Tiempo de reverberaci\u00f3n [s]"
 
 a.update();
 
-//tablaCoef("tablePiso", datosPiso, 0);
-//tablaCoef("tablePared", datosPared, 0);
-//tablaCoef("tableTecho", datosTecho, 1);
-//tablaAeq("tablePersona", datosPersona, 1);
-//tablaAeq("tableSilla", datosSilla, 1);
+//tablaCoef("tablePiso", datosPiso);
+//tablaCoef("tablePared", datosPared);
+//tablaCoef("tableTecho", datosTecho, 27);
+//tablaAeq("tablePersona", datosPersona);
+//tablaAeq("tableSilla", datosSilla);
 //tablaAeq("tableMesa", datosMesa);
-//tablaCoef("tablePuerta", datosPuerta, 0);
+//tablaCoef("tablePuerta", datosPuerta);
 //
-tablaCoef("tablePiso", datosPiso, res[pos].indexPiso);
-tablaCoef("tablePared", datosPared, res[pos].indexPared);
-tablaCoef("tableTecho", datosTecho, res[pos].indexTecho);
-tablaAeq("tablePersona", datosPersona, res[pos].indexPersonaSilla);
-tablaAeq("tableSilla", datosSilla, res[pos].indexPersonaSilla);
-tablaAeq("tableMesa", datosMesa);
-tablaCoef("tablePuerta", datosPuerta);
+//tablaCoef("tablePiso", datosPiso, res[pos].indexPiso);
+//tablaCoef("tablePared", datosPared, res[pos].indexPared);
+//tablaCoef("tableTecho", datosTecho, res[pos].indexTecho);
+//tablaAeq("tablePersona", datosPersona, res[pos].indexPersonaSilla);
+//tablaAeq("tableSilla", datosSilla, res[pos].indexPersonaSilla);
+//tablaAeq("tableMesa", datosMesa);
+//tablaCoef("tablePuerta", datosPuerta);
 //
 //res[pos].t
 };

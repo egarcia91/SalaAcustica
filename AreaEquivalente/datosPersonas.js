@@ -10,9 +10,8 @@ var datosPersona = [
 			0.35
 		]
 	},{
-		nombre : "Adulto en butacas tapizadas",
+		nombre : "Adulto en butacas tapizadas 1",
 		Aeq : [
-			1,
 			0.18,
 			0.40,
 			0.46,
@@ -21,9 +20,8 @@ var datosPersona = [
 			0.46
 		]
 	},{
-		nombre : "Adulto en butacas tapizadas",
+		nombre : "Adulto en butacas tapizadas 2",
 		Aeq : [
-			2,
 			0.12,
 			0.25,
 			0.42,
